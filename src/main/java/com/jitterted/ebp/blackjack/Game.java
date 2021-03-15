@@ -50,6 +50,25 @@ public class Game {
   }
 
   public void play() {
+    boolean playerBusted = playerTurn();
+
+    dealerTurn(playerBusted);
+
+    displayFinalGameState();
+
+    displayGameResult(playerBusted);
+  }
+
+  private void dealerTurn(boolean playerBusted) {
+    // Dealer makes its choice automatically based on a simple heuristic (<=16, hit, 17>=stand)
+    if (!playerBusted) {
+      while (handValueOf(dealerHand) <= 16) {
+        dealerHand.add(deck.draw());
+      }
+    }
+  }
+
+  private boolean playerTurn() {
     // get Player's decision: hit until they stand, then they're done (or they go bust)
     boolean playerBusted = false;
     while (!playerBusted) {
@@ -67,16 +86,10 @@ public class Game {
         System.out.println("You need to [H]it or [S]tand");
       }
     }
+    return playerBusted;
+  }
 
-    // Dealer makes its choice automatically based on a simple heuristic (<=16, hit, 17>=stand)
-    if (!playerBusted) {
-      while (handValueOf(dealerHand) <= 16) {
-        dealerHand.add(deck.draw());
-      }
-    }
-
-    displayFinalGameState();
-
+  private void displayGameResult(boolean playerBusted) {
     if (playerBusted) {
       System.out.println("You Busted, so you lose.  💸");
     } else if (handValueOf(dealerHand) > 21) {
@@ -129,6 +142,18 @@ public class Game {
     System.out.println(" (" + handValueOf(playerHand) + ")");
   }
 
+  private void displayFinalGameState() {
+    System.out.print(ansi().eraseScreen().cursor(1, 1));
+    System.out.println("Dealer has: ");
+    displayHand(dealerHand);
+    System.out.println(" (" + handValueOf(dealerHand) + ")");
+
+    System.out.println();
+    System.out.println("Player has: ");
+    displayHand(playerHand);
+    System.out.println(" (" + handValueOf(playerHand) + ")");
+  }
+
   private void displayBackOfCard() {
     System.out.print(
         ansi()
@@ -148,17 +173,5 @@ public class Game {
                            .map(Card::display)
                            .collect(Collectors.joining(
                                ansi().cursorUp(6).cursorRight(1).toString())));
-  }
-
-  private void displayFinalGameState() {
-    System.out.print(ansi().eraseScreen().cursor(1, 1));
-    System.out.println("Dealer has: ");
-    displayHand(dealerHand);
-    System.out.println(" (" + handValueOf(dealerHand) + ")");
-
-    System.out.println();
-    System.out.println("Player has: ");
-    displayHand(playerHand);
-    System.out.println(" (" + handValueOf(playerHand) + ")");
   }
 }
