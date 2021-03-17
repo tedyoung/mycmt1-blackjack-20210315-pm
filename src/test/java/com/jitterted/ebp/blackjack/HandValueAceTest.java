@@ -27,6 +27,14 @@ public class HandValueAceTest {
         .isEqualTo(1 + 8 + 3);
   }
 
+  @Test
+  public void handWithOneAceAnd10CardIsValuedAt11() throws Exception {
+    Hand hand = createHand("A", "10");
+
+    assertThat(hand.value())
+        .isEqualTo(21);
+  }
+
   private Hand createHand(String... ranks) {
     List<Card> cards = new ArrayList<>();
     for (String rank : ranks) {
