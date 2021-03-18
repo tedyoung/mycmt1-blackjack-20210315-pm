@@ -2,21 +2,25 @@ package com.jitterted.ebp.blackjack;
 
 public class Wallet {
 
-  private boolean isEmpty;
   private int balance;
 
   public Wallet() {
-    isEmpty = true;
     balance = 0;
   }
 
   public boolean isEmpty() {
-    return isEmpty;
+    return balance == 0;
   }
 
   public void addMoney(int amount) {
-    isEmpty = false;
+    requireGreaterThanZeroAmount(amount);
     balance += amount;
+  }
+
+  private void requireGreaterThanZeroAmount(int amount) {
+    if (amount <= 0) {
+      throw new IllegalArgumentException();
+    }
   }
 
   public int balance() {
